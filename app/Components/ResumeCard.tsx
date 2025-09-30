@@ -1,8 +1,27 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import ScoreCircle from "./ScoreCircle";
+import { usePuterStore } from "~/lib/puter";
 
 const ResumeCard = ({ resume }: { resume: Resume }) => {
+    const {auth,fs} = usePuterStore();
+    const navigate = useNavigate();
+    const [imageUrl, setImageUrl] = useState('');
+        
+    useEffect(() => {
+            if(!auth.isAuthenticated) navigate('/auth?next=/');
+        }, [auth.isAuthenticated]);
+    
+        useEffect(() => {
+          const loadResume:() => void = async () => {
+            const blob = await fs.read(resume.imagePath);
+            if(!blob) return;
+            const imageUrl = URL.createObjectURL(blob);
+            setImageUrl(imageUrl);
+          }
+          loadResume();
+        },[resume.imagePath]);
+        
   return (
     <Link to={`/resume/${resume.id}`} className="resume-card animate-in fade-in duration-1000">
         <div className="resume-card-header">
@@ -15,7 +34,7 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
         </div>
         <div className="gradient-border animate-in fade-in duration-1000">
             <div className="w-full h-full">
-                <img src={resume.imagePath} alt="Resume Preview" className="w-full h-full object-cover object-top" />
+                <img src={imageUrl} alt="Resume Preview" className="w-full h-full object-cover object-top" />
             </div>
         </div>
     </Link>

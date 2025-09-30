@@ -74,7 +74,7 @@ const Upload = () => {
     setStatusText("Analysis complete! and navigating to results...");
     console.log("Feedback:", data);
     setIsProcessing(false);
-    navigate(`/result/${uuid}`);
+    navigate(`/resume/${uuid}`);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
